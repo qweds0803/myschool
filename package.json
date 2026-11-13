@@ -1,0 +1,9 @@
+{
+  "name": "shalomfree-intro",
+  "version": "1.0.0",
+  "description": "샬롬자유학교 소개 웹사이트 (학생 실습)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
