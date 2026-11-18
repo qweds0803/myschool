@@ -60,6 +60,11 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (pathname === "/guestbook" || pathname === "/guestbook.html") {
+    sendFile(res, path.join(PUBLIC_DIR, "guestbook.html"));
+    return;
+  }
+
   if (pathname === "/semester1" || pathname === "/semester1.html") {
     sendFile(res, path.join(PUBLIC_DIR, "semester1.html"));
     return;
