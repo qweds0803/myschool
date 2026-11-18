@@ -1,0 +1,12 @@
+{
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/life", "destination": "/life.html" },
+    { "source": "/guestbook", "destination": "/guestbook.html" },
+    { "source": "/freedom", "destination": "/freedom.html" },
+    { "source": "/love", "destination": "/love.html" },
+    { "source": "/alternative", "destination": "/alternative.html" },
+    { "source": "/semester1", "destination": "/semester1.html" }
+  ]
+}
