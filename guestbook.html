@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>샬롬자유학교 - 방명록</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <!-- 모든 페이지 위쪽에 같은 메뉴 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="brand-link">
+        <img src="./logo.jpg" alt="샬롬자유학교 로고" class="brand-logo" />
+        <span>샬롬자유학교</span>
+      </a>
+      <nav aria-label="주요 메뉴">
+        <ul class="nav-menu">
+          <li><a href="./index.html" class="nav-link">홈</a></li>
+          <li><a href="./life.html" class="nav-link">학교생활</a></li>
+          <li><a href="./guestbook.html" class="nav-link active">방명록</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- 상단 배너 -->
+    <section class="hero-card">
+      <div class="greeting-badge">👋 이왕이면 샬자~</div>
+      <h1 class="hero-title">방명록</h1>
+      <p class="hero-subtitle">샬롬자유학교와 친구들에게 따뜻한 응원 글을 남겨주세요</p>
+    </section>
+
+    <!-- 응원 글 작성 폼 -->
+    <section class="section-box">
+      <div class="section-header">
+        <span class="section-badge">응원 남기기</span>
+        <h2 class="section-title">닉네임과 응원 글 쓰기</h2>
+      </div>
+
+      <div class="guestbook-form-card">
+        <form id="guestbook-form" class="form-row">
+          <div class="input-group">
+            <label for="nickname" class="input-label">닉네임</label>
+            <input
+              type="text"
+              id="nickname"
+              name="nickname"
+              class="input-field"
+              placeholder="닉네임을 적어주세요 (실제 이름은 적지 마세요)"
+              maxlength="20"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="message" class="input-label">응원 글</label>
+            <textarea
+              id="message"
+              name="message"
+              class="textarea-field"
+              placeholder="이왕이면 샬자~ 따뜻한 환영과 응원 메시지를 남겨주세요!"
+              maxlength="300"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submit-btn">✨ 응원 글 남기기</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 모두 같이 보는 방명록 목록 -->
+    <section class="section-box">
+      <div class="section-header">
+        <span class="section-badge">함께 보기</span>
+        <h2 class="section-title">모두가 함께 보는 응원 메시지</h2>
+      </div>
+
+      <div id="guestbook-list" class="guestbook-list" aria-live="polite">
+        <div class="empty-message">응원 글을 불러오는 중이에요...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 맨 아래 필수 문구 -->
+  <footer class="site-footer">
+    학생 실습으로 만든 사이트예요 (공식 홈페이지 아님) · 공식 홈페이지: <a href="https://www.shalomfree.kr" target="_blank" rel="noopener noreferrer">shalomfree.kr</a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = "https://mhrcomhxoptpjtieqvol.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ocmNvbWh4b3B0cGp0aWVxdm9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5NzM1NTQsImV4cCI6MjExMDU0OTU1NH0.x-UsOOa2JCWhSLgohnRazFVm7pi07Kw3bj8vRqSqN2w";
+
+    const form = document.getElementById("guestbook-form");
+    const nicknameInput = document.getElementById("nickname");
+    const messageInput = document.getElementById("message");
+    const listContainer = document.getElementById("guestbook-list");
+    const submitBtn = document.getElementById("submit-btn");
+
+    function formatDate(isoStr) {
+      if (!isoStr) return "";
+      try {
+        const d = new Date(isoStr);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        const h = String(d.getHours()).padStart(2, "0");
+        const min = String(d.getMinutes()).padStart(2, "0");
+        return `${y}.${m}.${day} ${h}:${min}`;
+      } catch (e) {
+        return "";
+      }
+    }
+
+    function renderEntries(entries) {
+      listContainer.innerHTML = "";
+
+      if (!entries || entries.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-message";
+        empty.textContent = "아직 남겨진 응원 글이 없어요. 첫 번째 응원 글을 남겨보세요! 🌱";
+        listContainer.appendChild(empty);
+        return;
+      }
+
+      entries.forEach((item) => {
+        const article = document.createElement("article");
+        article.className = "guestbook-item";
+
+        const header = document.createElement("div");
+        header.className = "guestbook-item-header";
+
+        const nick = document.createElement("span");
+        nick.className = "guestbook-nickname";
+        nick.textContent = "🌱 " + item.nickname;
+
+        const time = document.createElement("span");
+        time.className = "guestbook-time";
+        time.textContent = formatDate(item.created_at);
+
+        header.appendChild(nick);
+        header.appendChild(time);
+
+        const body = document.createElement("p");
+        body.className = "guestbook-message";
+        body.textContent = item.message;
+
+        article.appendChild(header);
+        article.appendChild(body);
+        listContainer.appendChild(article);
+      });
+    }
+
+    async function loadEntries() {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook?select=*&order=created_at.desc`, {
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (!res.ok) throw new Error("fetch failed");
+        const data = await res.json();
+        renderEntries(data);
+      } catch (err) {
+        listContainer.innerHTML = '<div class="empty-message">방명록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</div>';
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nickname = nicknameInput.value.trim();
+      const message = messageInput.value.trim();
+      if (!nickname || !message) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "등록 중...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
+          method: "POST",
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`,
+            "Content-Type": "application/json; charset=utf-8",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify({ nickname, message })
+        });
+
+        if (res.ok) {
+          messageInput.value = "";
+          await loadEntries();
+        } else {
+          alert("응원 글 등록에 실패했습니다. 다시 시도해 주세요.");
+        }
+      } catch (err) {
+        alert("네트워크 오류가 발생했습니다.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "✨ 응원 글 남기기";
+      }
+    });
+
+    loadEntries();
+  </script>
+</body>
+</html>
