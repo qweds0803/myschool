@@ -27,7 +27,7 @@
   <main class="main-container">
     <!-- 상단 배너 -->
     <section class="hero-card">
-      <div class="greeting-badge">👋 이왕이면 샬자~</div>
+      <div class="greeting-badge">이왕이면 샬자~</div>
       <h1 class="hero-title">방명록</h1>
       <p class="hero-subtitle">샬롬자유학교와 친구들에게 따뜻한 응원 글을 남겨주세요</p>
     </section>
@@ -66,7 +66,7 @@
             ></textarea>
           </div>
 
-          <button type="submit" class="submit-btn" id="submit-btn">✨ 응원 글 남기기</button>
+          <button type="submit" class="submit-btn" id="submit-btn">응원 글 남기기</button>
         </form>
       </div>
     </section>
@@ -120,7 +120,7 @@
       if (!entries || entries.length === 0) {
         const empty = document.createElement("div");
         empty.className = "empty-message";
-        empty.textContent = "아직 남겨진 응원 글이 없어요. 첫 번째 응원 글을 남겨보세요! 🌱";
+        empty.textContent = "아직 남겨진 응원 글이 없어요. 첫 번째 응원 글을 남겨보세요!";
         listContainer.appendChild(empty);
         return;
       }
@@ -134,7 +134,7 @@
 
         const nick = document.createElement("span");
         nick.className = "guestbook-nickname";
-        nick.textContent = "🌱 " + item.nickname;
+        nick.textContent = item.nickname;
 
         const time = document.createElement("span");
         time.className = "guestbook-time";
@@ -200,7 +200,7 @@
         alert("네트워크 오류가 발생했습니다.");
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = "✨ 응원 글 남기기";
+        submitBtn.textContent = "응원 글 남기기";
       }
     });
 
